@@ -54,7 +54,7 @@ public class Main {
 
         Solveur resolutionneur = new Solveur(jobs, machines);
 
-        Noeud graphe_solution = resolutionneur.resoudre();
+        Noeud graphe_solution = resolutionneur.generationGraphe(resolutionneur.solutionInitiale());
 
         System.out.println(graphe_solution.coutMax());
     }

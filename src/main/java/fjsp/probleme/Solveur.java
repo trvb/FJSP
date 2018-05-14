@@ -15,25 +15,27 @@ public class Solveur {
         this.machines = machines;
     }
 
-    Noeud resoudre()
-    {
+    HashMap<Machine, ArrayList<Tache>> solutionInitiale() {
         HashMap<Machine, ArrayList<Tache>> programme = new HashMap<Machine, ArrayList<Tache>>();
 
-        for(Machine m: machines)
+        for (Machine m : machines)
             programme.put(m, new ArrayList<Tache>());
 
         // We will generate an initial "naive" solution for the FJSP from which to work with
         // Basically: we schedule tasks for machines, and then we generate a solution graph
-        for(Job j : jobs)
-        {
-            for(Tache t: j.taches)
-            {
+        for (Job j : jobs) {
+            for (Tache t : j.taches) {
                 Ressource r = t.ressources.get(0); // We select the first possible machine for this task
 
                 programme.get(r.m).add(t); // And we add it to this machine's ordered task list
             }
         }
 
+        return programme;
+    }
+
+    Noeud generationGraphe(HashMap<Machine, ArrayList<Tache>> programme)
+    {
         // Scheduling is done: now we generate the solution graph
 
         // We iterate over the first tasks for each machine
