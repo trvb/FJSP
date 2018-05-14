@@ -2,10 +2,9 @@ package fjsp.graphe;
 
 public class Arc {
 
-    Noeud pred;
-    Noeud suiv;
-
-    int cout;
+    public Noeud pred;
+    public Noeud suiv;
+    public int cout;
 
     public Arc(Noeud p, Noeud s, int c)
     {
@@ -14,7 +13,7 @@ public class Arc {
         this.cout = c;
     }
 
-    public void afficherArc()
+    public void afficherArcDot()
     {
         if (!this.pred.tache.vide)
             System.out.print(this.pred.tache.id);

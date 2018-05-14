@@ -54,10 +54,13 @@ public class Main {
 
         Solveur resolutionneur = new Solveur(jobs, machines);
 
-        Noeud graphe_solution = resolutionneur.generationGraphe(resolutionneur.solutionInitiale());
+        Solution solution_initiale = resolutionneur.solutionInitiale();
+        Noeud graphe_solution = resolutionneur.generationGraphe(solution_initiale);
 
         System.out.println(graphe_solution.coutMax());
         graphe_solution.afficherDot();
+
+        resolutionneur.afficherGantt(solution_initiale, graphe_solution, null);
     }
 
 }

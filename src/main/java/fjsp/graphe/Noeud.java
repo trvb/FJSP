@@ -6,9 +6,9 @@ import fjsp.probleme.*;
 
 public class Noeud {
 
-    ArrayList<Arc> contraintes;
-
+    public ArrayList<Arc> contraintes;
     public Tache tache;
+    private int coutMax = -1;
 
     public Noeud(Tache t)
     {
@@ -55,7 +55,7 @@ public class Noeud {
 
         for (Arc a: contraintes)
         {
-            a.afficherArc();
+            a.afficherArcDot();
             a.pred.afficherDot(0, visites);
         }
 

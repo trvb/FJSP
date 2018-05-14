@@ -106,8 +106,32 @@ public class Solveur {
             noeuds_initiaux.get(j).contraindre(noeud_initial, 0);
 
         for(Job j: noeuds_terminaux.keySet())
-            noeud_terminal.contraindre(noeuds_terminaux.get(j), 0);
+            noeud_terminal.contraindre(noeuds_terminaux.get(j), sol.coutAffectation(noeuds_terminaux.get(j).tache));
 
         return noeud_terminal;
+    }
+
+    public void afficherGantt(Solution sol, Noeud graphe, ArrayList<Noeud> visites)
+    {
+        if(visites == null)
+            visites = new ArrayList<Noeud>();
+        else if(visites.contains(graphe))
+            return;
+
+        visites.add(graphe);
+
+        for(Arc a: graphe.contraintes)
+        {
+            if(!a.pred.tache.vide)
+            {
+                int date_fin = a.pred.coutMax() + a.cout;
+                System.out.println("\\ganttbar{" + sol.affectationTache(a.pred.tache).id + "}{" + a.pred.coutMax() +
+                        "}{" + date_fin + "}");
+
+                afficherGantt(sol, a.pred, visites);
+            }
+        }
+
+
     }
 }
