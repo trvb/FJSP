@@ -55,6 +55,8 @@ public class Main {
         Solveur resolutionneur = new Solveur(jobs, machines);
 
         Noeud graphe_solution = resolutionneur.resoudre();
+
+        System.out.println(graphe_solution.coutMax());
     }
 
 }

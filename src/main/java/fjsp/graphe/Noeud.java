@@ -23,7 +23,7 @@ public class Noeud {
 
     public int coutMax()
     {
-        int cout_max = Integer.MAX_VALUE;
+        int cout_max = 0;
 
         for(Arc a: contraintes)
         {

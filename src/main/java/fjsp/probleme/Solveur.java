@@ -71,6 +71,6 @@ public class Solveur {
             noeud_fin.contraindre(noeuds_terminaux.get(n), 0);
         }
 
-        return noeud_init;
+        return noeud_fin;
     }
 }

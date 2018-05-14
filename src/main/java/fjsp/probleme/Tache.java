@@ -12,6 +12,7 @@ public class Tache {
     {
         ressources = new ArrayList<Ressource>();
         this.vide = false;
+        this.id = id;
     }
 
     public Tache()
