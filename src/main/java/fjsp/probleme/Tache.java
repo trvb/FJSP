@@ -35,4 +35,6 @@ public class Tache {
         Ressource nouvelle_ressource = new Ressource(m, temps);
         ressources.add(nouvelle_ressource);
     }
+
+
 }

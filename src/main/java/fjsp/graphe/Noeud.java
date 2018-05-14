@@ -34,4 +34,17 @@ public class Noeud {
 
         return cout_max;
     }
+
+    public void afficherDot(int choix)
+    {
+        if (choix == 1)
+            System.out.println("graph S {");
+        for (Arc a: contraintes)
+        {
+            a.printArc();
+            a.pred.afficherDot(0);
+        }
+        if (choix == 1)
+            System.out.println("}");
+    }
 }
