@@ -1,8 +1,11 @@
 package fjsp.probleme;
 
 import fjsp.graphe.*;
+
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class Solveur {
 
@@ -15,64 +18,96 @@ public class Solveur {
         this.machines = machines;
     }
 
-    HashMap<Machine, ArrayList<Tache>> solutionInitiale() {
-        HashMap<Machine, ArrayList<Tache>> programme = new HashMap<Machine, ArrayList<Tache>>();
+    // Generation of an initial "naive" solution for the FJSP from which to work with
+    Solution solutionInitiale() {
+        Solution s = new Solution();
 
-        for (Machine m : machines)
-            programme.put(m, new ArrayList<Tache>());
+        // Operation sequence: tasks as they come
+        for (Job j : jobs)
+            s.operationSequence.addAll(j.taches);
 
-        // We will generate an initial "naive" solution for the FJSP from which to work with
-        // Basically: we schedule tasks for machines, and then we generate a solution graph
+        // Machine assignment: first machine available
+        // Initialization
+        for (Job j: jobs)
+            s.machineAssignment.put(j, new HashMap<Tache, Ressource>());
+
         for (Job j : jobs) {
             for (Tache t : j.taches) {
                 Ressource r = t.ressources.get(0); // We select the first possible machine for this task
+                // TODO: maybe switch to the most efficient machine first (min. cost) ?
 
-                programme.get(r.m).add(t); // And we add it to this machine's ordered task list
+                s.machineAssignment.get(j).put(t, r); // And we add it to this machine's task list
+                // Node: the order of elements in the HashMap defines the way each Machine is gonna handle the internal
+                // constraint order conflict
             }
         }
 
-        return programme;
+        return s;
     }
 
-    Noeud generationGraphe(HashMap<Machine, ArrayList<Tache>> programme)
+    Noeud generationGraphe(Solution sol)
     {
         // Scheduling is done: now we generate the solution graph
 
         // We iterate over the first tasks for each machine
-        HashMap<Noeud, Noeud> noeuds_terminaux = new HashMap<Noeud, Noeud>();
+        // Task ordering constraints + Graph generation
+        HashMap<Job, Noeud> noeuds_initiaux = new HashMap<Job, Noeud>();
+        HashMap<Job, Noeud> noeuds_terminaux = new HashMap<Job, Noeud>();
 
-        for(Machine m: programme.keySet())
+        // Raccourcis entre une tâche et son noeud dans le graphe
+        HashMap<Tache, Noeud> raccourcis_graphe = new HashMap<Tache, Noeud>();
+
+        // Task order for each job
+        // Those constraints NEVER change
+        for(Tache t: sol.operationSequence)
         {
-            Noeud initial = null;
+            Noeud n = new Noeud(t);
+            raccourcis_graphe.put(t, n);
 
-            Noeud precedent = null;
-            for(Tache t: programme.get(m))
+            if(!noeuds_initiaux.containsKey(t.parent))
             {
-                Noeud n = new Noeud(t);
+                // This is the first task of this job, hence a starting node
+                noeuds_initiaux.put(t.parent, n);
+            }
+            else
+            {
+                // This wasn't the first task of this job, so we constrain it with previous terminal node
+                n.contraindre(noeuds_terminaux.get(t.parent), sol.machineAssignment.get(t.parent).get(t).temps);
+            }
+            // Current node replaces previous terminal node
+            noeuds_terminaux.put(t.parent, n);
+        }
 
-                if(precedent != null)
+        // Machine ordering
+        for(Machine m: machines)
+        {
+            ArrayList<Tache> ord_seq = sol.machineSequence(m);
+            Collections.reverse(ord_seq);
+
+            Noeud suiv = null;
+            for(Tache t: ord_seq)
+            {
+                Noeud n = raccourcis_graphe.get(t);
+
+                if(suiv != null)
                 {
-                    n.contraindre(precedent, precedent.tache.ressources.get(0).temps);
+                    suiv.contraindre(n, sol.coutAffectation(t));
                 }
 
-                if(initial == null)
-                    initial = n;
-
-                precedent = n;
+                suiv = n;
             }
-
-            noeuds_terminaux.put(initial, precedent);
         }
 
-        Noeud noeud_init = new Noeud(null);
-        Noeud noeud_fin = new Noeud(null);
+        // Création des noeuds de début et de fin
+        Noeud noeud_initial = new Noeud(new Tache());
+        Noeud noeud_terminal = new Noeud(new Tache());
 
-        for(Noeud n: noeuds_terminaux.keySet())
-        {
-            n.contraindre(noeud_init, 0);
-            noeud_fin.contraindre(noeuds_terminaux.get(n), 0);
-        }
+        for(Job j: noeuds_initiaux.keySet())
+            noeuds_initiaux.get(j).contraindre(noeud_initial, 0);
 
-        return noeud_fin;
+        for(Job j: noeuds_terminaux.keySet())
+            noeud_terminal.contraindre(noeuds_terminaux.get(j), 0);
+
+        return noeud_terminal;
     }
 }

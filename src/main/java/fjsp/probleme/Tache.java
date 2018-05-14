@@ -7,6 +7,15 @@ public class Tache {
     public int id;
     public boolean vide;
     public ArrayList<Ressource> ressources;
+    public Job parent;
+
+    public Tache(int id, Job parent)
+    {
+        ressources = new ArrayList<Ressource>();
+        this.vide = false;
+        this.id = id;
+        this.parent = parent;
+    }
 
     public Tache(int id)
     {

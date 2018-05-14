@@ -14,5 +14,6 @@ public class Job {
     public void ajouterTache(Tache t)
     {
         this.taches.add(t);
+        t.parent = this;
     }
 }
