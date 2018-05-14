@@ -7,7 +7,7 @@ public class Noeud {
 
     ArrayList<Arc> contraintes;
 
-    Tache tache;
+    public Tache tache;
 
     public Noeud(Tache t)
     {
