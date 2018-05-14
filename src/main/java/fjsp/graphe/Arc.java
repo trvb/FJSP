@@ -15,10 +15,12 @@ public class Arc {
     }
     public void printArc()
     {
-        if (this.pred.tache != null) {
+        if (this.pred.tache != null)
             System.out.print(this.pred.tache.id);
-            System.out.print(" -> ");
-        }
+        else
+            System.out.print("Debut");
+        System.out.print(" -- ");
+
         if (this.suiv.tache != null)
             System.out.print(this.suiv.tache.id);
         else
