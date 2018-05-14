@@ -1,5 +1,6 @@
 package fjsp.graphe;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import fjsp.probleme.*;
 
@@ -35,15 +36,29 @@ public class Noeud {
         return cout_max;
     }
 
-    public void afficherDot(int choix)
+    public void afficherDot()
     {
+        this.afficherDot(1, null);
+    }
+
+    private void afficherDot(int choix, ArrayList<Noeud> visites)
+    {
+        if(visites == null)
+            visites = new ArrayList<Noeud>();
+        else if(visites.contains(this))
+            return;
+
+        visites.add(this);
+
         if (choix == 1)
-            System.out.println("graph S {");
+            System.out.println("digraph S {");
+
         for (Arc a: contraintes)
         {
-            a.printArc();
-            a.pred.afficherDot(0);
+            a.afficherArc();
+            a.pred.afficherDot(0, visites);
         }
+
         if (choix == 1)
             System.out.println("}");
     }
