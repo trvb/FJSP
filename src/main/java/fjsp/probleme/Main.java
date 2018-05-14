@@ -1,5 +1,7 @@
 package fjsp.probleme;
 
+import fjsp.graphe.Noeud;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Bonjour.");
@@ -48,8 +50,11 @@ public class Main {
         j3.ajouterTache(t23);
 
         Job[] jobs = {j1,j2,j3};
+        Machine[] machines = {m1, m2, m3};
 
-        Solveur resolutionneur = new Solveur(jobs);
+        Solveur resolutionneur = new Solveur(jobs, machines);
+
+        Noeud graphe_solution = resolutionneur.resoudre();
     }
 
 }

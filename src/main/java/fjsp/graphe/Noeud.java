@@ -12,6 +12,7 @@ public class Noeud {
     public Noeud(Tache t)
     {
         this.tache = t;
+        this.contraintes = new ArrayList<Arc>();
     }
 
     public void contraindre(Noeud precedent, int cout)
