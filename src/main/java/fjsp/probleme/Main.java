@@ -57,7 +57,7 @@ public class Main {
         Noeud graphe_solution = resolutionneur.generationGraphe(resolutionneur.solutionInitiale());
 
         System.out.println(graphe_solution.coutMax());
-        graphe_solution.afficherDot();
+        graphe_solution.afficherDot(1);
     }
 
 }
