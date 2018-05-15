@@ -2,55 +2,50 @@ package fjsp.probleme;
 
 import fjsp.graphe.Noeud;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Main {
     public static void main(String[] args) {
         System.out.println("Bonjour.");
 
-        // Définition de notre problème de planification
-        Machine m1 = new Machine(1);
-        Machine m2 = new Machine(2);
-        Machine m3 = new Machine(3);
+        //Partie lecture de fichier
 
-        Tache t11 = new Tache(11);
-        t11.ajouterRessource(m1, 3);
+        File file = new File("C:\\Users\\Tangi\\Desktop\\Monaldo\\test.jfs");
+        try (BufferedReader br = new BufferedReader(new FileReader(file)))
+        {
+            String line = null;
+            try {
+                line = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        Tache t21 = new Tache(21);
-        t21.ajouterRessource(m2, 2);
+            String[] ligneJob = line.split(" ");
+            // A la première ligne on récupère les données liées au pb (nombre de job/ nombre de machine  nombre de tâche
+            //Initialisation des Jobs
+            int nb_job = Integer.parseInt(ligneJob[0]);
+            Job[] jobs = new Job[nb_job];
+            //Initialisation des machines
+            int nb_machine = Integer.parseInt(ligneJob[1]);
+            Machine[] machines = creaMachine(nb_machine);
 
-        Tache t31 = new Tache(31);
-        t31.ajouterRessource(m3, 5);
 
-        Tache t12 = new Tache(12);
-        t12.ajouterRessource(m2, 4);
+            // Lecture du fichier
+            int i = 0;
+            for (i=0 ; i<nb_job ; i++) {
+                try {
+                    line = br.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //Creation du i eme Job
+                jobs[i]= creaJob(line, i, machines);
 
-        Tache t22 = new Tache(22);
-        t22.ajouterRessource(m1, 2);
 
-        Tache t32 = new Tache(32);
-        t32.ajouterRessource(m3, 2);
-
-        Tache t13 = new Tache(13);
-        t13.ajouterRessource(m3, 2);
-
-        Tache t23 = new Tache(23);
-        t23.ajouterRessource(m2, 3);
-
-        Job j1 = new Job();
-        j1.ajouterTache(t11);
-        j1.ajouterTache(t21);
-        j1.ajouterTache(t31);
-
-        Job j2 = new Job();
-        j2.ajouterTache(t12);
-        j2.ajouterTache(t22);
-        j2.ajouterTache(t32);
-
-        Job j3 = new Job();
-        j3.ajouterTache(t13);
-        j3.ajouterTache(t23);
-
-        Job[] jobs = {j1,j2,j3};
-        Machine[] machines = {m1, m2, m3};
+            }
 
         Solveur resolutionneur = new Solveur(jobs, machines);
 
@@ -62,6 +57,47 @@ public class Main {
 
         //solution_initiale.afficherGantt(null);
         solution_initiale.exportGantt();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    public static Machine[] creaMachine(int nbMachine) {
+        if (nbMachine >= 0)
+        {
+            Machine machines[] = new Machine[nbMachine];
+            for (int i = 0; i < nbMachine; i++)
+                machines[i] = new Machine(i);
+            return machines;
+        }
+        else
+            return null;
+    }
+
+    public static Job creaJob(String ligne, int nbjob, Machine[] mach)
+    {
+        Job newJob = new Job();
+        System.out.println(ligne);
+
+        String[] currentJob = ligne.split(" ");
+        //Lecture ligne par ligne
+
+        int i=0;
+        for (int j = 1; j < currentJob.length; j=j+3) // Ne Fonctionne que si l'on a un ordinateur pour une ressource à chaque fois
+        {
+
+            //Initialisation des variables lié à UNE tâche
+            int numMachinePossible = Integer.parseInt(currentJob[j+1]);
+            int nbTempsTache = Integer.parseInt(currentJob[j+2]);
+
+            Tache t = new Tache((100*(nbjob+1) + i));
+            t.ajouterRessource(mach[numMachinePossible-1], nbTempsTache);
+
+            newJob.ajouterTache(t);
+            i++;
+        }
+
+
+        return newJob;
+    }
 }
