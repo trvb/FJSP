@@ -55,12 +55,13 @@ public class Main {
         Solveur resolutionneur = new Solveur(jobs, machines);
 
         Solution solution_initiale = resolutionneur.solutionInitiale();
-        Noeud graphe_solution = resolutionneur.generationGraphe(solution_initiale);
+        solution_initiale.generationGraphe();
 
-        System.out.println(graphe_solution.coutMax());
-        graphe_solution.afficherDot();
+        System.out.println(solution_initiale.graphe.coutMax());
+        solution_initiale.graphe.afficherDot();
 
-        resolutionneur.afficherGantt(solution_initiale, graphe_solution, null);
+        //solution_initiale.afficherGantt(null);
+        solution_initiale.exportGantt();
     }
 
 }
