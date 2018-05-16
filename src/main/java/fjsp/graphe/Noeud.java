@@ -22,8 +22,17 @@ public class Noeud {
         contraintes.add(a);
     }
 
-    public int coutMax()
-    {
+    public int coutMax() throws ErreurGrapheCyclique {
+        return this.coutMax(null);
+    }
+
+    private int coutMax(ArrayList<Noeud> visites) throws ErreurGrapheCyclique {
+        // contrôle de boucle
+        if(visites == null)
+            visites = new ArrayList<Noeud>();
+        else if(visites.contains(this))
+            throw new ErreurGrapheCyclique("Circuit détecté lors du calcul du cout max");
+
         // mémoization du coutMax pour accélerer le traitement
         if(this.coutMax >= 0)
             return this.coutMax;

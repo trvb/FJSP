@@ -1,6 +1,7 @@
 package fjsp.probleme;
 
 import fjsp.graphe.Arc;
+import fjsp.graphe.ErreurGrapheCyclique;
 import fjsp.graphe.Noeud;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +25,20 @@ public class Solution {
         this.operationSequence = new ArrayList<Tache>();
         this.probleme = pb;
         this.graphe_initialise = false;
+    }
+
+    public boolean estAdmissible()
+    {
+        if(!this.graphe_initialise)
+            return false;
+
+        try {
+            this.graphe.coutMax();
+        } catch (ErreurGrapheCyclique err) {
+            return false;
+        }
+
+        return true;
     }
 
     public Machine affectationTache(Tache t)
@@ -118,20 +133,33 @@ public class Solution {
         graphe_initialise = true;
     }
 
-    public void exportGantt()
-    {
+    public void exportGantt() throws ErreurSolutionNonAdmissible {
+        int cout_max_graphe;
+        try {
+            cout_max_graphe = this.graphe.coutMax();
+        } catch (ErreurGrapheCyclique err) {
+            throw new ErreurSolutionNonAdmissible("Impossible d'exporter une solution non admissible.");
+        }
+
         for(Machine m: this.probleme.machines)
         {
             System.out.println("\\\\");
-            System.out.println("\\ganttgroup{M" + m.id + "}{0}{" + this.graphe.coutMax() + "}");
+            System.out.println("\\ganttgroup{M" + m.id + "}{0}{" + cout_max_graphe + "}");
             for(Tache t: machineSequence(m))
             {
                 if(!t.vide)
                 {
                     Noeud n = liste_noeuds.get(t);
+                    int cmax;
 
-                    int date_debut = n.coutMax();
-                    int date_fin = n.coutMax() + this.coutAffectation(t) - 1;
+                    try {
+                        cmax = n.coutMax();
+                    } catch (ErreurGrapheCyclique err) { // Ce cas ne devrait jamais se produire
+                        throw new ErreurSolutionNonAdmissible("Impossible d'exporter une solution non admissible.");
+                    }
+
+                    int date_debut = cmax;
+                    int date_fin = cmax + this.coutAffectation(t) - 1;
                     System.out.println("\\ganttbar{" + t.id + "}{" + date_debut + "}{" + date_fin + "}");
                 }
 
