@@ -24,6 +24,10 @@ public class Noeud {
 
     public int coutMax()
     {
+        // mémoization du coutMax pour accélerer le traitement
+        if(this.coutMax >= 0)
+            return this.coutMax;
+
         int cout_max = 0;
 
         for(Arc a: contraintes)
@@ -32,6 +36,8 @@ public class Noeud {
             if(cout_max < coucou)
                 cout_max = coucou;
         }
+
+        this.coutMax = cout_max;
 
         return cout_max;
     }

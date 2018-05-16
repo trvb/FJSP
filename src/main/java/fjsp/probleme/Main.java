@@ -4,7 +4,7 @@ import java.io.File;
 
 public class Main {
     public static void main(String[] args) {
-        Instance pb = new Instance("./Monaldo/Fjsp/Job_Data/Barnes/mt10c1.fjs");
+        Instance pb = new Instance(args[0]);
 
         Solveur resolutionneur = new Solveur(pb);
 

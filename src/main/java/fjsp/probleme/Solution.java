@@ -8,23 +8,21 @@ import java.util.HashMap;
 
 public class Solution {
 
-    public ArrayList<Machine> machines;
-    public ArrayList<Job> jobs;
+    public Instance probleme;
 
     public HashMap<Job, HashMap<Tache, Ressource>> machineAssignment;
     public ArrayList<Tache> operationSequence;
 
     public Noeud graphe;
-    public HashMap<Tache, Noeud> liste_noeuds;
+    public HashMap<Tache, Noeud> liste_noeuds; // liste des noeuds par tâche, évite d'avoir à traverser le graphe
 
     public Boolean graphe_initialise;
 
-    public Solution(ArrayList<Machine> machines, ArrayList<Job> jobs)
+    public Solution(Instance pb)
     {
         this.machineAssignment = new HashMap<Job, HashMap<Tache, Ressource>>();
         this.operationSequence = new ArrayList<Tache>();
-        this.machines = machines;
-        this.jobs = jobs;
+        this.probleme = pb;
         this.graphe_initialise = false;
     }
 
@@ -85,7 +83,7 @@ public class Solution {
         }
 
         // Machine ordering
-        for(Machine m: machines)
+        for(Machine m: this.probleme.machines)
         {
             ArrayList<Tache> ord_seq = this.machineSequence(m);
             Collections.reverse(ord_seq);
@@ -122,7 +120,7 @@ public class Solution {
 
     public void exportGantt()
     {
-        for(Machine m: machines)
+        for(Machine m: this.probleme.machines)
         {
             System.out.println("\\\\");
             System.out.println("\\ganttgroup{M" + m.id + "}{0}{" + this.graphe.coutMax() + "}");
