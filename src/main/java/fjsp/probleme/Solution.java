@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 public class Solution {
 
-    public Machine machines[];
-    public Job jobs[];
+    public ArrayList<Machine> machines;
+    public ArrayList<Job> jobs;
 
     public HashMap<Job, HashMap<Tache, Ressource>> machineAssignment;
     public ArrayList<Tache> operationSequence;
@@ -19,7 +19,7 @@ public class Solution {
 
     public Boolean graphe_initialise;
 
-    public Solution(Machine machines[], Job jobs[])
+    public Solution(ArrayList<Machine> machines, ArrayList<Job> jobs)
     {
         this.machineAssignment = new HashMap<Job, HashMap<Tache, Ressource>>();
         this.operationSequence = new ArrayList<Tache>();

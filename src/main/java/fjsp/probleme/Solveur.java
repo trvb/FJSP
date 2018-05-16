@@ -9,13 +9,13 @@ import java.util.ListIterator;
 
 public class Solveur {
 
-    public Job jobs[];
-    public Machine machines[];
+    public ArrayList<Machine> machines;
+    public ArrayList<Job> jobs;
 
-    public Solveur(Job jobs[], Machine machines[])
+    public Solveur(Instance pb)
     {
-        this.jobs = jobs;
-        this.machines = machines;
+        this.jobs = pb.jobs;
+        this.machines = pb.machines;
     }
 
     // Generation of an initial "naive" solution for the FJSP from which to work with

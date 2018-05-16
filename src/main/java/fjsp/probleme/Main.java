@@ -1,54 +1,12 @@
 package fjsp.probleme;
 
-import fjsp.graphe.Noeud;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Bonjour.");
+        Instance pb = new Instance("./Monaldo/Fjsp/Job_Data/Barnes/mt10c1.fjs");
 
-        //Partie lecture de fichier
-
-        File file = new File("C:\\Users\\Tangi\\Desktop\\Monaldo\\Fjsp\\Job_Data\\Barnes\\Text\\mt10c1.fjs");
-        try (BufferedReader br = new BufferedReader(new FileReader(file)))
-        {
-            String line = null;
-            try {
-                line = br.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            String[] ligneJob = line.split(" ");
-            // A la première ligne on récupère les données liées au pb (nombre de job/ nombre de machine (le 3eme chiffre n'est pas utile)
-            //Initialisation des Jobs
-            int nb_job = Integer.parseInt(ligneJob[0]);
-            Job[] jobs = new Job[nb_job];
-            //Initialisation des machines
-            int nb_machine = Integer.parseInt(ligneJob[1]);
-            Machine[] machines = creaMachine(nb_machine);
-
-
-            // Lecture du fichier
-            int i = 0;
-            for (i=0 ; i<nb_job ; i++) {
-                //A chaque ligne il y a création d'un Job
-                try {
-                    line = br.readLine();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //Creation du i eme Job
-                jobs[i]= creaJob(line, i, machines);
-
-
-            }
-
-        Solveur resolutionneur = new Solveur(jobs, machines);
+        Solveur resolutionneur = new Solveur(pb);
 
         Solution solution_initiale = resolutionneur.solutionInitiale();
         solution_initiale.generationGraphe();
@@ -58,58 +16,5 @@ public class Main {
 
         //solution_initiale.afficherGantt(null);
         solution_initiale.exportGantt();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static Machine[] creaMachine(int nbMachine) {
-        if (nbMachine >= 0)
-        {
-            Machine machines[] = new Machine[nbMachine];
-            for (int i = 0; i < nbMachine; i++)
-                machines[i] = new Machine(i);
-            return machines;
-        }
-        else
-            return null;
-    }
-
-    public static Job creaJob(String ligne, int nbjob, Machine[] mach)
-    {
-        Job newJob = new Job();
-        //System.out.println("Nombre de machine :"+mach.length);
-
-        //System.out.println(ligne);
-
-        String[] currentJob = ligne.split(" ");
-        //Lecture ligne par ligne
-        int i=0;
-        for (int j = 1; j < currentJob.length; j=j+3) // Ne Fonctionne que si l'on a un ordinateur pour une ressource à chaque fois
-        {
-
-            //Initialisation des variables lié à UNE tâche
-            int nbRessourceDispo = Integer.parseInt(currentJob[j]);
-
-
-            //Creation Tâche
-            Tache t = new Tache((100*(nbjob+1) + i));
-
-                int index = j;
-                for (; j<index + 2 * nbRessourceDispo ; j = j + 2) // Fonctionne même dans le cas où il y a plusieurs machine dispo
-                {
-                    int numMachinePossible = Integer.parseInt(currentJob[j+1]);
-                    int nbTempsTache = Integer.parseInt(currentJob[j+2]);
-                    //Ajout de la ressource disponible pour la tâche
-                    //System.out.println("Couple machine/temps : "+numMachinePossible+" "+nbTempsTache);
-                    t.ajouterRessource(mach[numMachinePossible-1], nbTempsTache);
-                }
-            j=j-2; //On va trop loin avec la boucle for, du coup faut rajuster ça, y'a sûrement des trucs plus joli, mais bon, ça marche :)
-            newJob.ajouterTache(t);
-            i++;
-        }
-
-
-        return newJob;
     }
 }

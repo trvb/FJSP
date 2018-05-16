@@ -1,6 +1,9 @@
 target/
 .idea/
 
+*.iml
+*.fjs
+
 # Compiled class file
 *.class
 
