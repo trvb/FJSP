@@ -31,12 +31,9 @@ public class Instance {
 
             line = line.trim().replaceAll(" +", " ");
             line = line.trim().replaceAll("\t+", " ");
-            System.out.println(line);
 
             String[] ligneJob = line.split(" ");
 
-            System.out.println(ligneJob[0]);
-            System.out.println(ligneJob[1]);
             // A la première ligne on récupère les données liées au pb (nombre de job/ nombre de machine (le 3eme chiffre n'est pas utile)
             //Initialisation des Jobs
             int nb_job = Integer.parseInt(ligneJob[0]);

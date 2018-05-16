@@ -11,7 +11,7 @@ public class Main {
         Solution solution_initiale = resolutionneur.solutionInitiale();
         solution_initiale.generationGraphe();
 
-        System.out.println(solution_initiale.graphe.coutMax());
+        System.out.println("Coût max: " + solution_initiale.graphe.coutMax());
         solution_initiale.graphe.afficherDot();
 
         //solution_initiale.afficherGantt(null);
