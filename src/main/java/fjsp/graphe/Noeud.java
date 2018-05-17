@@ -23,24 +23,20 @@ public class Noeud {
     }
 
     public int coutMax() throws ErreurGrapheCyclique {
-        return this.coutMax(null);
-    }
-
-    private int coutMax(ArrayList<Noeud> visites) throws ErreurGrapheCyclique {
-        // contrôle de boucle
-        if(visites == null)
-            visites = new ArrayList<Noeud>();
-        else if(visites.contains(this))
-            throw new ErreurGrapheCyclique("Circuit détecté lors du calcul du cout max");
-
         // mémoization du coutMax pour accélerer le traitement
         if(this.coutMax >= 0)
             return this.coutMax;
+
+        // contrôle de boucle
+        this.coutMax = -2;
 
         int cout_max = 0;
 
         for(Arc a: contraintes)
         {
+            if(a.pred.coutMax == -2)
+                throw new ErreurGrapheCyclique("Circuit détecté lors du calcul du cout max");
+
             int coucou = a.cout + a.pred.coutMax();
             if(cout_max < coucou)
                 cout_max = coucou;

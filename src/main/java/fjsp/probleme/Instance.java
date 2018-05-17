@@ -2,11 +2,13 @@ package fjsp.probleme;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Instance {
     ArrayList<Machine> machines;
     ArrayList<Job> jobs;
 
+    // TODO: gérer plus de 100 taches/job
     public Instance(String path) {
 
         this.jobs = new ArrayList<Job>();
@@ -62,6 +64,40 @@ public class Instance {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public int jobsFlexibles()
+    {
+        int cpt = 0;
+        for(Job j: this.jobs)
+        {
+            if(j.tachesFlexibles() > 0)
+                cpt++;
+        }
+
+        return cpt;
+    }
+
+    public Tache tacheFlexibleAleatoire()
+    {
+        int jf = this.jobsFlexibles();
+        if(jf > 0)
+        {
+            int jobf_sel = ThreadLocalRandom.current().nextInt(0, jf+1);
+            int jobf_idx = 0;
+
+            for(Job j: this.jobs)
+            {
+                if(j.tachesFlexibles() > 0)
+                    jobf_idx++;
+
+                if(jobf_idx == jobf_sel)
+                    return j.tacheFlexibleAleatoire();
+            }
+        }
+
+        // TODO: gestion d'erreur avec exception
+        return null;
     }
 
     private void creationMachine(int nbMachine)

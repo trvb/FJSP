@@ -36,5 +36,9 @@ public class Tache {
         ressources.add(nouvelle_ressource);
     }
 
+    public boolean estFlexible()
+    {
+        return this.ressources.size() > 1;
+    }
 
 }

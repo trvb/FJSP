@@ -17,7 +17,7 @@ public class Solveur {
     }
 
     // Generation of an initial "naive" solution for the FJSP from which to work with
-    Solution solutionInitiale() {
+    public Solution solutionInitiale() {
         Solution s = new Solution(this.probleme);
 
         // Operation sequence: tasks as they come

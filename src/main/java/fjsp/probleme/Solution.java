@@ -6,6 +6,7 @@ import fjsp.graphe.Noeud;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Solution {
 
@@ -21,10 +22,62 @@ public class Solution {
 
     public Solution(Instance pb)
     {
-        this.machineAssignment = new HashMap<Job, HashMap<Tache, Ressource>>();
-        this.operationSequence = new ArrayList<Tache>();
+        this.machineAssignment = new HashMap<>();
+        this.operationSequence = new ArrayList<>();
         this.probleme = pb;
         this.graphe_initialise = false;
+    }
+
+    public Solution(Instance pb, HashMap<Job, HashMap<Tache, Ressource>>ma, ArrayList<Tache> os)
+    {
+        this.machineAssignment = ma;
+        this.operationSequence = os;
+        this.probleme = pb;
+        this.graphe_initialise = false;
+    }
+
+    public Solution voisinAleatoire()
+    {
+        HashMap<Job, HashMap<Tache, Ressource>> new_MA = this.machineAssignment;
+        ArrayList<Tache> new_OS = this.operationSequence;
+
+        int direction = ThreadLocalRandom.current().nextInt(0, 2);
+
+        // On modifie aléatoirement l'affectation tache/machine, si au moins une tache est flexible
+        if(direction == 0 && this.probleme.jobsFlexibles() > 0)
+        {
+            Tache t = this.probleme.tacheFlexibleAleatoire();
+
+            int ressource = ThreadLocalRandom.current().nextInt(0, t.ressources.size());
+
+            // Copie du machineAssignment original au lieu de référencement
+            new_MA = new HashMap<>(this.machineAssignment);
+            for(Job j: new_MA.keySet())
+            {
+                // Copie des affectations par tache au lieu de référencement
+                new_MA.put(j, new HashMap<Tache, Ressource>(new_MA.get(j)));
+
+                // Modification de l'affectation choisie aléatoirement
+                if(j == t.parent)
+                    new_MA.get(j).put(t, t.ressources.get(ressource));
+            }
+        }
+        // Sinon on modifie la séquence de taches
+        else
+        {
+            // On sélectionne deux tâches à échanger de place
+            int t1 = ThreadLocalRandom.current().nextInt(0, this.operationSequence.size()), t2;
+            do {
+                t2= ThreadLocalRandom.current().nextInt(0, this.operationSequence.size());
+            } while(t1 == t2);
+
+            // Copie de l'operationSequence original au lieu de référencement
+            new_OS = new ArrayList<>(this.operationSequence);
+
+            Collections.swap(new_OS, t1, t2);
+        }
+
+        return new Solution(this.probleme, new_MA, new_OS);
     }
 
     public boolean estAdmissible()
@@ -64,7 +117,7 @@ public class Solution {
         return this.machineAssignment.get(t.parent).get(t).temps;
     }
 
-    void generationGraphe()
+    public void generationGraphe()
     {
         // Scheduling is done: now we generate the solution graph
 
@@ -76,31 +129,36 @@ public class Solution {
         // Raccourcis entre une tâche et son noeud dans le graphe
         HashMap<Tache, Noeud> raccourcis_graphe = new HashMap<Tache, Noeud>();
 
-        // Task order for each job
-        // Those constraints NEVER change
-        for(Tache t: this.operationSequence)
+        // Ordre des tâches pour les jobs
+        // Ces contraintes ne changent jamais
+        for(Job j: this.probleme.jobs)
         {
-            Noeud n = new Noeud(t);
-            raccourcis_graphe.put(t, n);
+            for(Tache t: j.taches)
+            {
+                Noeud n = new Noeud(t);
+                raccourcis_graphe.put(t, n);
 
-            if(!noeuds_initiaux.containsKey(t.parent))
-            {
-                // This is the first task of this job, hence a starting node
-                noeuds_initiaux.put(t.parent, n);
+                if (!noeuds_initiaux.containsKey(j)) {
+                    // C'est la première tâche du job, donc une tâche initiale
+                    noeuds_initiaux.put(j, n);
+                }
+                else
+                {
+                    // Sinon, on la contraint avec la tâche terminale précédente
+                    n.contraindre(noeuds_terminaux.get(j), this.coutAffectation(noeuds_terminaux.get(j).tache));
+                }
+                // Enfin, la tâche devient la nouvelle terminale
+                noeuds_terminaux.put(j, n);
             }
-            else
-            {
-                // This wasn't the first task of this job, so we constrain it with previous terminal node
-                n.contraindre(noeuds_terminaux.get(t.parent), this.coutAffectation(noeuds_terminaux.get(t.parent).tache));
-            }
-            // Current node replaces previous terminal node
-            noeuds_terminaux.put(t.parent, n);
         }
 
-        // Machine ordering
+        // Ordre des tâches dans les machines
         for(Machine m: this.probleme.machines)
         {
+            // On sélectionne les tâches pour la machine m, par ordre d'apparition dans la séquence d'ordre
             ArrayList<Tache> ord_seq = this.machineSequence(m);
+
+            // On inverse cette séquence
             Collections.reverse(ord_seq);
 
             Noeud suiv = null;
