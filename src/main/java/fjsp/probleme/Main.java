@@ -20,9 +20,10 @@ public class Main {
         //solution_initiale.exportGantt();
 
         System.out.println("Test algorithme glouton");
-        Glouton solveur_glouton = new Glouton(pb);
+        Glouton solveur_glouton = new Glouton(pb, 100000);
 
-        Solution solution_gloutonne = solveur_glouton.resoudre(100000);
+        Solution solution_gloutonne = solveur_glouton.resoudre();
+        solveur_glouton.afficherStatistiques();
         System.out.println("Coût max: " + solution_gloutonne.graphe.coutMax());
         //solution_gloutonne.graphe.afficherDot();
         //solution_gloutonne.exportGantt();

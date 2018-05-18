@@ -9,19 +9,21 @@ import java.io.IOException;
 
 public class Glouton extends Algorithme {
 
-	public Glouton(Instance pb) {
-	    super(pb);
-	    this.explorees = 0;
-	    this.derniere = 0;
+	public Glouton(Instance pb, int limite) {
+	    super(pb, limite);
 	}
 
 	@Override
-    public Solution resoudre(int limite) {
+    public Solution resoudre() {
         Solveur resolutionneur = new Solveur(this.probleme);
         Solution courante = resolutionneur.solutionInitiale(), evaluee;
         courante.generationGraphe();
         int meilleurCoutMax = Integer.MAX_VALUE, coutCourant;
-        int generees = 0, derniere_iteration = 0;
+
+        this.derniere = 0;
+        this.nb_maj = 0;
+        this.generees = 0;
+        this.explorees = 0;
 
         try {
             meilleurCoutMax = courante.graphe.coutMax();
@@ -30,22 +32,16 @@ public class Glouton extends Algorithme {
             err.printStackTrace();
         }
 
-        while(this.explorees < limite)
+        while(this.explorees < this.limite)
         {
             coutCourant = Integer.MAX_VALUE;
             do {
-                generees++;
+                this.generees++;
                 evaluee = courante.voisinAleatoire();
                 evaluee.generationGraphe();
             } while(!evaluee.estAdmissible());
 
-            int tmp = this.explorees+1;
-            String data = "\r" + "Calcul " + tmp + "/" + limite;
-            try {
-                System.out.write(data.getBytes());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            this.afficherProgression();
 
             try {
                 coutCourant = evaluee.graphe.coutMax();
@@ -58,20 +54,12 @@ public class Glouton extends Algorithme {
             {
                 meilleurCoutMax = coutCourant;
                 courante = evaluee;
-                derniere_iteration = this.explorees;
-                this.derniere++;
+                this.derniere = this.explorees;
+                this.nb_maj++;
             }
 
             this.explorees++;
         }
-
-        float rejets = (float)(generees - this.explorees) / (float)(generees) * 100f;
-
-        System.out.println("\nStatistiques solutions");
-        System.out.println("\texplorées: " + this.explorees);
-        System.out.println("\tgénérées: " + generees + " - " + rejets + "% rejets");
-        System.out.println("\tnombre de mises à jour: " + this.derniere);
-        System.out.println("\tdernière itération de maj: " + derniere_iteration);
 
         return courante;
     }
