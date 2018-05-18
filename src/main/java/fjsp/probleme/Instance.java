@@ -44,6 +44,15 @@ public class Instance {
             int nb_machine = Integer.parseInt(ligneJob[1]);
             creationMachine(nb_machine);
 
+            //On cherche l'ordre de grandeur du nb de job
+            int ordreGrandeur=0;
+            int temp = nb_job;
+            while (temp > 10)
+            {
+                temp = temp/10;
+                ordreGrandeur++;
+            }
+
             // Lecture du fichier
             int i = 0;
             for (i = 0; i < nb_job; i++) {
@@ -56,7 +65,7 @@ public class Instance {
                 //Creation du i eme Job
                 line = line.trim().replaceAll(" +", " ");
 
-                creationJob(line, i);
+                creationJob(line, i, ordreGrandeur);
             }
 
         } catch (FileNotFoundException e) {
@@ -100,7 +109,7 @@ public class Instance {
         }
     }
 
-    private void creationJob(String ligne, int nbjob)
+    private void creationJob(String ligne, int nbjob, int ordreGrandeur)
     {
         Job newJob = new Job();
 
@@ -113,7 +122,8 @@ public class Instance {
             int nbRessourceDispo = Integer.parseInt(currentJob[j]);
 
             //Creation Tâche
-            Tache t = new Tache((100*(nbjob+1) + i));
+            int id = (int) Math.pow(10, (ordreGrandeur+1));
+            Tache t = new Tache((id*(nbjob+1) + i));
 
             int index = j;
             for (; j<index + 2 * nbRessourceDispo ; j = j + 2) // Fonctionne même dans le cas où il y a plusieurs machine dispo
