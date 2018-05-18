@@ -35,17 +35,8 @@ public class Job {
         int tf = this.tachesFlexibles();
         if(tf > 0)
         {
-            int tf_sel = ThreadLocalRandom.current().nextInt(0, tf+1);
-            int tf_idx = 0;
-
-            for(Tache t: this.taches)
-            {
-                if(t.estFlexible())
-                    tf_idx++;
-
-                if(tf_sel == tf_idx)
-                    return t;
-            }
+            int tf_sel = ThreadLocalRandom.current().nextInt(0, tf);
+            return this.taches.get(tf_sel);
         }
 
         // TODO: gestion d'erreur avec exception

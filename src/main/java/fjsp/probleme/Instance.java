@@ -83,17 +83,8 @@ public class Instance {
         int jf = this.jobsFlexibles();
         if(jf > 0)
         {
-            int jobf_sel = ThreadLocalRandom.current().nextInt(0, jf+1);
-            int jobf_idx = 0;
-
-            for(Job j: this.jobs)
-            {
-                if(j.tachesFlexibles() > 0)
-                    jobf_idx++;
-
-                if(jobf_idx == jobf_sel)
-                    return j.tacheFlexibleAleatoire();
-            }
+            int jobf_sel = ThreadLocalRandom.current().nextInt(0, jf);
+            return this.jobs.get(jobf_sel).tacheFlexibleAleatoire();
         }
 
         // TODO: gestion d'erreur avec exception
