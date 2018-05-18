@@ -18,14 +18,21 @@ public class Job {
         t.parent = this;
     }
 
+    // mémoization
+    private int nbTachesFlexibles = -1;
     public int tachesFlexibles()
     {
+        if(nbTachesFlexibles >= 0)
+            return this.nbTachesFlexibles;
+
         int cpt = 0;
         for(Tache t: this.taches)
         {
             if(t.estFlexible())
                 cpt++;
         }
+
+        this.nbTachesFlexibles = cpt;
 
         return cpt;
     }

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Solveur {
 
@@ -24,16 +25,15 @@ public class Solveur {
         for (Job j : this.probleme.jobs)
             s.operationSequence.addAll(j.taches);
 
-        // Machine assignment: first machine available
+        // Machine assignment: random available machine
         // Initialization
         for (Job j: this.probleme.jobs)
             s.machineAssignment.put(j, new HashMap<Tache, Ressource>());
 
         for (Job j : this.probleme.jobs) {
             for (Tache t : j.taches) {
-                Ressource r = t.ressources.get(0); // We select the first possible machine for this task
-                // TODO: maybe switch to the most efficient machine first (min. cost) ?
-
+                int machine_sel = ThreadLocalRandom.current().nextInt(0, t.ressources.size());
+                Ressource r = t.ressources.get(machine_sel);
                 s.machineAssignment.get(j).put(t, r); // And we add it to this machine's task list
             }
         }

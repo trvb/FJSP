@@ -23,7 +23,7 @@ public class Solution {
     public Solution(Instance pb)
     {
         this.machineAssignment = new HashMap<>();
-        this.operationSequence = new ArrayList<>();
+        this.operationSequence = new ArrayList<>(pb.nbTaches());
         this.probleme = pb;
         this.graphe_initialise = false;
     }
@@ -188,7 +188,7 @@ public class Solution {
         this.liste_noeuds = raccourcis_graphe;
         this.graphe = noeud_terminal;
 
-        graphe_initialise = true;
+        this.graphe_initialise = true;
     }
 
     public void exportGantt() throws ErreurSolutionNonAdmissible {

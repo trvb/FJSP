@@ -8,6 +8,20 @@ public class Instance {
     ArrayList<Machine> machines;
     ArrayList<Job> jobs;
 
+    private int nbTaches = -1;
+    public int nbTaches()
+    {
+        if(this.nbTaches >= 0)
+            return this.nbTaches;
+
+        int cpt = 0;
+        for(Job j: this.jobs)
+            cpt += j.taches.size();
+
+        this.nbTaches = cpt;
+        return cpt;
+    }
+
     // TODO: gérer plus de 100 taches/job
     public Instance(String path) {
 
@@ -67,7 +81,6 @@ public class Instance {
 
                 creationJob(line, i, ordreGrandeur);
             }
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -75,8 +88,13 @@ public class Instance {
         }
     }
 
+    // mémoization
+    private int nbJobsFlexibles = -1;
     public int jobsFlexibles()
     {
+        if(this.nbJobsFlexibles >= 0)
+            return this.nbJobsFlexibles;
+
         int cpt = 0;
         for(Job j: this.jobs)
         {
@@ -84,6 +102,7 @@ public class Instance {
                 cpt++;
         }
 
+        this.nbJobsFlexibles = cpt;
         return cpt;
     }
 
