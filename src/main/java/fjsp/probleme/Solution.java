@@ -36,6 +36,13 @@ public class Solution {
         this.graphe_initialise = false;
     }
 
+    public void afficherOS()
+    {
+        for(Tache t: this.operationSequence)
+            System.out.print(t.id + " ");
+        System.out.print("\r\n");
+    }
+
     public Solution voisinAleatoire()
     {
         HashMap<Job, HashMap<Tache, Ressource>> new_MA = this.machineAssignment;
@@ -65,16 +72,72 @@ public class Solution {
         // Sinon on modifie la séquence de taches
         else
         {
-            // On sélectionne deux tâches à échanger de place
-            int t1 = ThreadLocalRandom.current().nextInt(0, this.operationSequence.size()), t2;
-            do {
-                t2= ThreadLocalRandom.current().nextInt(0, this.operationSequence.size());
-            } while(t1 == t2);
-
             // Copie de l'operationSequence original au lieu de référencement
             new_OS = new ArrayList<>(this.operationSequence);
 
-            Collections.swap(new_OS, t1, t2);
+            // Cet algorithme ne génère pas de solution non admissible
+            if(Configuration.CONSERVATIVE_OS_EXPLORATION) {
+
+                boolean rechercheTerminee = false;
+                int tInf, tSup, t1;
+
+                do {
+                    // On sélectionne une tâche au hasard
+                    t1 = ThreadLocalRandom.current().nextInt(0, new_OS.size());
+                    Tache tacheDeplacee = new_OS.get(t1);
+
+                    tInf = t1;
+                    if (t1 > 0)
+                        for (tInf = t1 - 1; tInf > 0; tInf--) {
+                            Tache tacheInf = new_OS.get(tInf);
+                            if (tacheInf.parent.equals(tacheDeplacee.parent))
+                                break;
+                        }
+
+                    // On déplace la borne inf pour inclure le premier élément si il ne fait pas partie du job
+                    if (tInf == 0 && !new_OS.get(tInf).parent.equals(tacheDeplacee.parent))
+                        tInf--;
+
+                    tSup = t1;
+                    if (tSup < new_OS.size())
+                        for (tSup = t1 + 1; tSup < new_OS.size(); tSup++) {
+                            Tache tacheSup = new_OS.get(tSup);
+                            if (tacheSup.parent.equals(tacheDeplacee.parent))
+                                break;
+                        }
+
+                    // On déplace la borne sup pour inclure le dernier élément si il ne fait pas partie du job
+                    if (tSup == (new_OS.size() - 1) && !new_OS.get(tSup).parent.equals(tacheDeplacee.parent))
+                        tSup++;
+
+                    // Cas "111" avec tacheDeplacée au milieu: il faut recommencer, sinon on peut modifier
+                    if (tSup - tInf > 2)
+                        rechercheTerminee = true;
+
+                } while (!rechercheTerminee);
+
+                int t2 = ThreadLocalRandom.current().nextInt(tInf + 1, tSup);
+
+                new_OS.add(t2, new_OS.get(t1));
+
+                if (t2 <= t1)
+                    t1++;
+
+                new_OS.remove(t1);
+
+            // Sinon on génère des OS aléatoires, mais qui ne donnent pas forcemment une solution admissible
+            } else {
+                // On sélectionne deux tâches à échanger de place
+                int t1 = ThreadLocalRandom.current().nextInt(0, this.operationSequence.size()), t2;
+                do {
+                    t2= ThreadLocalRandom.current().nextInt(0, this.operationSequence.size());
+                } while(t1 == t2);
+
+                // Copie de l'operationSequence original au lieu de référencement
+                new_OS = new ArrayList<>(this.operationSequence);
+
+                Collections.swap(new_OS, t1, t2);
+            }
         }
 
         return new Solution(this.probleme, new_MA, new_OS);
@@ -167,9 +230,7 @@ public class Solution {
                 Noeud n = raccourcis_graphe.get(t);
 
                 if(suiv != null)
-                {
                     suiv.contraindre(n, this.coutAffectation(t));
-                }
 
                 suiv = n;
             }
@@ -220,7 +281,6 @@ public class Solution {
                     int date_fin = cmax + this.coutAffectation(t) - 1;
                     System.out.println("\\ganttbar{" + t.id + "}{" + date_debut + "}{" + date_fin + "}");
                 }
-
             }
         }
     }

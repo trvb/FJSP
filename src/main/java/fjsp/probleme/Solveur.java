@@ -2,6 +2,7 @@ package fjsp.probleme;
 
 import fjsp.graphe.*;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class Solveur {
     }
 
     // Generation of an initial "naive" solution for the FJSP from which to work with
-    public Solution solutionInitiale() {
+    public Solution solutionInitiale(int shuffler) {
         Solution s = new Solution(this.probleme);
 
         // Operation sequence: tasks as they come
@@ -36,6 +37,36 @@ public class Solveur {
                 Ressource r = t.ressources.get(machine_sel);
                 s.machineAssignment.get(j).put(t, r); // And we add it to this machine's task list
             }
+        }
+
+        try {
+            s.generationGraphe();
+            int previous_cost = s.graphe.coutMax();
+
+            int shfl_count = 0;
+            do {
+                float progres = (float)(shfl_count+1) / (float)shuffler * 100f;
+                String data = "\r" + "Shuffling " + progres + "%";
+                try {
+                    System.out.write(data.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                Solution z = s.voisinAleatoire();
+                z.generationGraphe();
+                if(z.estAdmissible())
+                {
+                    shfl_count++;
+                    s = z;
+                }
+            } while(shfl_count < shuffler);
+
+            System.out.print("\r\n");
+
+            System.out.println("\tCoût max: " + previous_cost + " -> " + s.graphe.coutMax());
+        } catch(ErreurGrapheCyclique err) {
+            err.printStackTrace();
         }
 
         return s;

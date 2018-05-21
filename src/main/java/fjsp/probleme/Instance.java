@@ -53,7 +53,6 @@ public class Instance {
             // A la première ligne on récupère les données liées au pb (nombre de job/ nombre de machine (le 3eme chiffre n'est pas utile)
             //Initialisation des Jobs
             int nb_job = Integer.parseInt(ligneJob[0]);
-            Job[] jobs = new Job[nb_job];
             //Initialisation des machines
             int nb_machine = Integer.parseInt(ligneJob[1]);
             creationMachine(nb_machine);
@@ -130,7 +129,7 @@ public class Instance {
 
     private void creationJob(String ligne, int nbjob, int ordreGrandeur)
     {
-        Job newJob = new Job();
+        Job newJob = new Job(nbjob);
 
         String[] currentJob = ligne.split(" ");
         //Lecture ligne par ligne

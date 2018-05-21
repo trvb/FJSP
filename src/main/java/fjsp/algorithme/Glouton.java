@@ -4,8 +4,7 @@ import fjsp.graphe.ErreurGrapheCyclique;
 import fjsp.probleme.Instance;
 import fjsp.probleme.Solution;
 import fjsp.probleme.Solveur;
-
-import java.io.IOException;
+import fjsp.probleme.Configuration;
 
 public class Glouton extends Algorithme {
 
@@ -16,7 +15,7 @@ public class Glouton extends Algorithme {
 	@Override
     public Solution resoudre() {
         Solveur resolutionneur = new Solveur(this.probleme);
-        Solution courante = resolutionneur.solutionInitiale(), evaluee;
+        Solution courante = resolutionneur.solutionInitiale(Configuration.SOLVER_SHUFFLING), evaluee;
         courante.generationGraphe();
         int meilleurCoutMax = Integer.MAX_VALUE, coutCourant;
 

@@ -1,6 +1,5 @@
 package fjsp.graphe;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import fjsp.probleme.*;
 

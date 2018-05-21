@@ -5,10 +5,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Job {
 
+    public int id;
     public ArrayList<Tache> taches;
 
-    public Job()
+    public Job(int id)
     {
+        this.id = id;
         this.taches = new ArrayList<Tache>();
     }
 
