@@ -15,7 +15,7 @@ public class Glouton extends Algorithme {
 	@Override
     public Solution resoudre() {
         Solveur resolutionneur = new Solveur(this.probleme);
-        Solution courante = resolutionneur.solutionInitiale(Configuration.SOLVER_SHUFFLING), evaluee;
+        Solution courante = resolutionneur.solutionInitiale(Configuration.SOLVER_SHUFFLING, true), evaluee;
         courante.generationGraphe();
         int meilleurCoutMax = Integer.MAX_VALUE, coutCourant;
 

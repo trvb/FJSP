@@ -12,6 +12,9 @@ public class Configuration {
     public static boolean CONSERVATIVE_OS_EXPLORATION = true;
 
     // Nombre d'itérations à explorer par l'algorithme, au maximum
-    public static final int ALGO_LIMIT = 10000;
+    public static final int ALGO_LIMIT = 20000;
+
+    // Algorithme génétique
+    public static final int MUTATION_RATE = 25; // 25% de mutation
 
 }

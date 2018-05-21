@@ -19,10 +19,11 @@ public class Solveur {
     }
 
     // Generation of an initial "naive" solution for the FJSP from which to work with
-    public Solution solutionInitiale(int shuffler) {
+    public Solution solutionInitiale(int shuffler, boolean sortieConsole) {
         Solution s = new Solution(this.probleme);
 
         // Operation sequence: tasks as they come
+        // TODO: randomize job order
         for (Job j : this.probleme.jobs)
             s.operationSequence.addAll(j.taches);
 
@@ -46,11 +47,14 @@ public class Solveur {
             int shfl_count = 0;
             do {
                 float progres = (float)(shfl_count+1) / (float)shuffler * 100f;
-                String data = "\r" + "Shuffling " + progres + "%";
-                try {
-                    System.out.write(data.getBytes());
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                if(sortieConsole) {
+                    String data = "\r" + "Shuffling " + progres + "%";
+                    try {
+                        System.out.write(data.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 Solution z = s.voisinAleatoire();
@@ -62,9 +66,13 @@ public class Solveur {
                 }
             } while(shfl_count < shuffler);
 
-            System.out.print("\r\n");
 
-            System.out.println("\tCoût max: " + previous_cost + " -> " + s.graphe.coutMax());
+            if(sortieConsole)
+            {
+                System.out.print("\r\n");
+                System.out.println("\tCoût max: " + previous_cost + " -> " + s.graphe.coutMax());
+            }
+
         } catch(ErreurGrapheCyclique err) {
             err.printStackTrace();
         }

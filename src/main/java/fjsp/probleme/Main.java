@@ -2,6 +2,7 @@ package fjsp.probleme;
 
 import fjsp.graphe.ErreurGrapheCyclique;
 import fjsp.algorithme.Glouton;
+import fjsp.algorithme.genetique.Evolution;
 
 import java.io.File;
 
@@ -21,7 +22,7 @@ public class Main {
         //solution_initiale.graphe.afficherDot();
         //solution_initiale.exportGantt();
 
-        System.out.println("Test algorithme glouton");
+        System.out.println("\nTest algorithme glouton");
         Glouton solveur_glouton = new Glouton(pb, Configuration.ALGO_LIMIT);
 
         Solution solution_gloutonne = solveur_glouton.resoudre();
@@ -29,5 +30,11 @@ public class Main {
         System.out.println("Coût max: " + solution_gloutonne.graphe.coutMax());
         //solution_gloutonne.graphe.afficherDot();
         //solution_gloutonne.exportGantt();
+
+        System.out.println("\nTest algorithme évolution");
+        Evolution solveur_evolution = new Evolution(pb, 20, Configuration.ALGO_LIMIT);
+        Solution solution_evolution = solveur_evolution.resoudre();
+        solveur_evolution.afficherStatistiques();
+
     }
 }

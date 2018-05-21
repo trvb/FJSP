@@ -13,8 +13,8 @@ public class Famille {
         this.parent1 = p1;
         this.parent2 = p2;
 
-        this.enfant1 = new Solution(p1.probleme);
-        this.enfant2 = new Solution(p1.probleme);
+        this.enfant1 = new Solution(p1.probleme, p1.machineAssignment, p1.operationSequence);
+        this.enfant2 = new Solution(p2.probleme, p2.machineAssignment, p2.operationSequence);
 
         this.croisement();
     }
@@ -24,5 +24,8 @@ public class Famille {
         {
             throw new ErreurCroisementImpossible("Les deux parents ne partagent pas la même instance de problème.");
         }
+
+        // TODO: croisement OS
+        // Pour le moment les enfants ont le patrimoine génétique des parents
     }
 }
