@@ -19,7 +19,7 @@ public class Mutation {
         int le_miracle_de_la_vie = ThreadLocalRandom.current().nextInt(0, 100);
 
         if(le_miracle_de_la_vie > Configuration.MUTATION_RATE)
-            this.mutee = mutee.voisinAleatoire();
+            this.mutee = mutee.meilleurVoisin(Configuration.ALGO_NEIGHBOURS_COUNT);;
 
         if(!this.mutee.graphe_initialise)
             this.mutee.generationGraphe();

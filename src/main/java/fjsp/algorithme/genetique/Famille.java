@@ -27,5 +27,8 @@ public class Famille {
 
         // TODO: croisement OS
         // Pour le moment les enfants ont le patrimoine génétique des parents
+
+        this.enfant1.generationGraphe();
+        this.enfant2.generationGraphe();
     }
 }

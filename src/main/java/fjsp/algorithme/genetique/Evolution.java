@@ -15,7 +15,7 @@ public class Evolution extends Algorithme {
     private int taille;
 
     public Evolution(Instance pb, int taille_population, int limite) {
-        super(pb, limite);
+        super(pb, limite, true);
         this.taille = taille_population;
         this.population = new ArrayList<>(taille);
 
@@ -44,6 +44,7 @@ public class Evolution extends Algorithme {
 
         Solution meilleureSolution = null;
         int meilleurCoutMax = Integer.MAX_VALUE, coutCourant;
+        boolean stop = false;
 
         int generations = 0;
         do {
@@ -98,7 +99,8 @@ public class Evolution extends Algorithme {
 
             this.explorees++;
             afficherProgression();
-        } while(this.explorees < this.limite);
+            stop = this.explorees - this.derniere > Configuration.ALGO_EXTREMUM_THRESHOLD;
+        } while(this.explorees < this.limite && !stop);
 
         System.out.print("\r\nPopulation finale: ");
         for(Solution s: this.population)

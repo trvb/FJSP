@@ -3,6 +3,8 @@ package fjsp.probleme;
 import fjsp.graphe.Arc;
 import fjsp.graphe.ErreurGrapheCyclique;
 import fjsp.graphe.Noeud;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +43,35 @@ public class Solution {
         for(Tache t: this.operationSequence)
             System.out.print(t.id + " ");
         System.out.print("\r\n");
+    }
+
+    public Solution meilleurVoisin(int taille_voisinage)
+    {
+        int meilleurCout = Integer.MAX_VALUE, coutCourant;
+        Solution meilleurVoisin = null;
+
+        for(int i=0; i<taille_voisinage; i++)
+        {
+            Solution voisin = null;
+            do {
+                voisin = this.voisinAleatoire();
+                voisin.generationGraphe();
+            } while(!voisin.estAdmissible());
+
+            try {
+                coutCourant = voisin.graphe.coutMax();
+
+                if(coutCourant < meilleurCout)
+                {
+                    meilleurCout = coutCourant;
+                    meilleurVoisin = voisin;
+                }
+            } catch (ErreurGrapheCyclique erreurGrapheCyclique) {
+                erreurGrapheCyclique.printStackTrace();
+            }
+        }
+
+        return meilleurVoisin;
     }
 
     public Solution voisinAleatoire()

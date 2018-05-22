@@ -18,28 +18,8 @@ public class Solveur {
         this.probleme = pb;
     }
 
-    // Generation of an initial "naive" solution for the FJSP from which to work with
-    public Solution solutionInitiale(int shuffler, boolean sortieConsole) {
-        Solution s = new Solution(this.probleme);
-
-        // Operation sequence: tasks as they come
-        // TODO: randomize job order
-        for (Job j : this.probleme.jobs)
-            s.operationSequence.addAll(j.taches);
-
-        // Machine assignment: random available machine
-        // Initialization
-        for (Job j: this.probleme.jobs)
-            s.machineAssignment.put(j, new HashMap<Tache, Ressource>());
-
-        for (Job j : this.probleme.jobs) {
-            for (Tache t : j.taches) {
-                int machine_sel = ThreadLocalRandom.current().nextInt(0, t.ressources.size());
-                Ressource r = t.ressources.get(machine_sel);
-                s.machineAssignment.get(j).put(t, r); // And we add it to this machine's task list
-            }
-        }
-
+    public Solution marcheAléatoire(Solution s, int shuffler, boolean sortieConsole)
+    {
         try {
             s.generationGraphe();
             int previous_cost = s.graphe.coutMax();
@@ -78,5 +58,30 @@ public class Solveur {
         }
 
         return s;
+    }
+
+    // Generation of an initial "naive" solution for the FJSP from which to work with
+    public Solution solutionInitiale(int shuffler, boolean sortieConsole) {
+        Solution s = new Solution(this.probleme);
+
+        // Operation sequence: tasks as they come
+        // TODO: randomize job order
+        for (Job j : this.probleme.jobs)
+            s.operationSequence.addAll(j.taches);
+
+        // Machine assignment: random available machine
+        // Initialization
+        for (Job j: this.probleme.jobs)
+            s.machineAssignment.put(j, new HashMap<Tache, Ressource>());
+
+        for (Job j : this.probleme.jobs) {
+            for (Tache t : j.taches) {
+                int machine_sel = ThreadLocalRandom.current().nextInt(0, t.ressources.size());
+                Ressource r = t.ressources.get(machine_sel);
+                s.machineAssignment.get(j).put(t, r); // And we add it to this machine's task list
+            }
+        }
+
+        return this.marcheAléatoire(s, shuffler, sortieConsole);
     }
 }

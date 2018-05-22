@@ -12,9 +12,15 @@ public class Configuration {
     public static boolean CONSERVATIVE_OS_EXPLORATION = true;
 
     // Nombre d'itérations à explorer par l'algorithme, au maximum
-    public static final int ALGO_LIMIT = 20000;
+    public static final int ALGO_LIMIT = 50000;
+
+    // Les algos s'interrompent si ils passent ce seuil d'itérations sans trouver de meilleure solution
+    public static final int ALGO_EXTREMUM_THRESHOLD = ALGO_LIMIT / 5;
+
+    // Taille du voisinage à explorer autour d'une solution
+    public static final int ALGO_NEIGHBOURS_COUNT = 5;
 
     // Algorithme génétique
-    public static final int MUTATION_RATE = 25; // 25% de mutation
+    public static final int MUTATION_RATE = 50; // 50% de mutation
 
 }

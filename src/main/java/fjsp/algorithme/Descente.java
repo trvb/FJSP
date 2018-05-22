@@ -6,23 +6,32 @@ import fjsp.probleme.Solution;
 import fjsp.probleme.Solveur;
 import fjsp.probleme.Configuration;
 
-public class Glouton extends Algorithme {
+public class Descente extends Algorithme {
 
-	public Glouton(Instance pb, int limite) {
-	    super(pb, limite);
+    public Descente(Instance pb, int limite, boolean sortieConsole) {
+	    super(pb, limite, sortieConsole);
 	}
 
-	@Override
-    public Solution resoudre() {
+    @Override
+	public Solution resoudre()
+    {
         Solveur resolutionneur = new Solveur(this.probleme);
         Solution courante = resolutionneur.solutionInitiale(Configuration.SOLVER_SHUFFLING, true), evaluee;
         courante.generationGraphe();
+
+        return this.resoudre(courante);
+    }
+
+    public Solution resoudre(Solution depart) {
+        Solution courante = depart, evaluee;
         int meilleurCoutMax = Integer.MAX_VALUE, coutCourant;
 
         this.derniere = 0;
         this.nb_maj = 0;
         this.generees = 0;
         this.explorees = 0;
+
+        boolean stop = false;
 
         try {
             meilleurCoutMax = courante.graphe.coutMax();
@@ -31,12 +40,12 @@ public class Glouton extends Algorithme {
             err.printStackTrace();
         }
 
-        while(this.explorees < this.limite)
+        while(this.explorees < this.limite && !stop)
         {
             coutCourant = Integer.MAX_VALUE;
             do {
                 this.generees++;
-                evaluee = courante.voisinAleatoire();
+                evaluee = courante.meilleurVoisin(Configuration.ALGO_NEIGHBOURS_COUNT);
                 evaluee.generationGraphe();
             } while(!evaluee.estAdmissible());
 
@@ -58,6 +67,7 @@ public class Glouton extends Algorithme {
             }
 
             this.explorees++;
+            stop = this.explorees - this.derniere > Configuration.ALGO_EXTREMUM_THRESHOLD;
         }
 
         return courante;
