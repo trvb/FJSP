@@ -26,23 +26,20 @@ public class Noeud {
         if(this.coutMax >= 0)
             return this.coutMax;
 
-        // contrôle de boucle
+        // contrôle de circuit
         this.coutMax = -2;
-
         int cout_max = 0;
 
-        for(Arc a: contraintes)
-        {
+        for(Arc a: contraintes) {
             if(a.pred.coutMax == -2)
                 throw new ErreurGrapheCyclique("Circuit détecté lors du calcul du cout max");
 
-            int coucou = a.cout + a.pred.coutMax();
-            if(cout_max < coucou)
-                cout_max = coucou;
+            int cout_courant = a.cout + a.pred.coutMax();
+            if(cout_max < cout_courant)
+                cout_max = cout_courant;
         }
 
         this.coutMax = cout_max;
-
         return cout_max;
     }
 

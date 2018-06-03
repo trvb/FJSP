@@ -12,7 +12,7 @@ public class Tabou extends Algorithme {
 
     ArrayList<Solution> tabuList = new ArrayList<Solution>();
     public Tabou(Instance pb, int limite) {
-        super(pb, limite);
+        super(pb, limite, true);
     }
 
     @Override
